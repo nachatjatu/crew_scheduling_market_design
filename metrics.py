@@ -55,7 +55,6 @@ def utilities_per_crew(matching, U):
     utilities = U[np.arange(len(assigned_lines)), assigned_lines]
     return utilities
 
-
 def gini(values):
     """
     Compute Gini coefficient of a 1D numpy array.
@@ -74,3 +73,15 @@ def gini(values):
     
     return diff_sum / (2 * n * n * mean)
 
+def justified_envy(seniority_order, U, matches):
+    justified_envy_by_rank = []
+    for p_i, crew_i in enumerate(seniority_order):
+        justified_envy = 0
+        own_line = matches[crew_i]
+        own_utilities = U[crew_i, :]
+        for crew_j in seniority_order[p_i:]:
+            other_line = matches[crew_j]
+            if own_utilities[other_line] > own_utilities[own_line]:
+                justified_envy += 1
+        justified_envy_by_rank.append(justified_envy)
+    return np.array(justified_envy_by_rank)
